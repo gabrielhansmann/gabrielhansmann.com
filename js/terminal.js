@@ -9,9 +9,9 @@
     }
 
     /* Configuration */
-    const CURR_DIR = '~'
-    const AVAIL_DIRS = ['.', '..', 'dir1', 'dir2', 'dir3']
-    const USER = 'user@gabrielhansmann.com';
+    const CURR_DIR = window.CURR_DIR;
+    const AVAIL_DIRS = window.AVAIL_DIR;
+    const USER = window.USER;
     const GREEN = '#26a164';
     const WHITE = '#fff';
     const BLUE = '#12488b';
