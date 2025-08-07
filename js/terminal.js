@@ -35,9 +35,11 @@
             { text: USER, color: GREEN }, { text: ':', color: WHITE }, { text: CURR_DIR, color: BLUE}, { text: '$ ', color: WHITE },
             { text: full_cmd + '\n', color: WHITE }
         ]);
-        
+        const split_cmd = full_cmd.split(' ');
+        const cmd = split_cmd[0];
+
         let output = [];
-        switch (full_cmd) {
+        switch (cmd) {
             case 'help': {
                 output.push( { text: 'Available commands: help, clear, ll, ls\n', color: WHITE } );
                 break;
@@ -55,20 +57,31 @@
             }
             case 'ls': {
                 for (const dir of AVAIL_DIRS) {
-                    if (dir != '.' && dir != '..') output.push( { text: dir + ' ', color: BLUE } );
+                    if (dir != '.' && dir != '..') {
+                        output.push( { text: dir + ' ', color: BLUE } );
+                    }
                 }
                 output.push( { text: '\n', color: WHITE } );
                 break;
             }
             case 'l': {
                 for (const dir of AVAIL_DIRS) {
-                    if (dir != '.' && dir != '..') output.push( { text: dir, color: BLUE }, { text: '/ ', color: WHITE } );
+                    if (dir != '.' && dir != '..') {
+                        output.push( { text: dir, color: BLUE }, { text: '/ ', color: WHITE } );
+                    }
                 }
                 output.push( { text: '\n', color: WHITE } );
                 break;
             }
+            case 'cd': {
+                if (split_cmd.length < 2 || split_cmd[1] === '~') { 
+                    window.location.replace('/');
+                } else {
+                    window.location.replace('/' + split_cmd[1]);
+                }  
+            }
             default: {
-                output.push( { text: 'bash: ' + full_cmd + ': command not found', color: WHITE } );
+                output.push( { text: 'bash: ' + cmd + ': command not found', color: WHITE } );
                 break;
             }
         }
