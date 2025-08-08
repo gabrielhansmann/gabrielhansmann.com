@@ -5,8 +5,7 @@ body       {
 }
 #term { 
   background:#300924;
-  color:#0f0;                 /* Fallback-Farbe */
-  white-space:pre-wrap;       /* Terminal-Zeilenumbruch */
+  white-space:pre-wrap;
   padding:1rem;
   font:16px/1.4 "Fira Mono", monospace;
   font-weight: 600;
@@ -14,7 +13,6 @@ body       {
 .cursor    { 
   display:inline-block; 
   width:8px; 
-  background:#0f0; 
   animation:blink 1s steps(1) infinite; 
 }
 @keyframes blink { 

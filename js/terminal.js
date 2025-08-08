@@ -9,6 +9,7 @@
     }
 
     /* Configuration */
+    const PARENT_DIR = window.PARENT_DIR;
     const CURR_DIR = window.CURR_DIR;
     const AVAIL_DIRS = window.AVAIL_DIR;
     const USER = window.USER;
@@ -22,6 +23,7 @@
     let current_cmd = -1;
     let buffer = '';
     let saved_buffer = '';
+    let change_site = false;
 
     /* Helper – push one coloured line */
     function pushLine(tokens) {
@@ -39,6 +41,7 @@
         const cmd = split_cmd[0];
 
         let output = [];
+        change_site = false;
         switch (cmd) {
             case 'help': {
                 output.push( { text: 'Available commands: help, clear, ll, ls\n', color: WHITE } );
@@ -76,9 +79,29 @@
             case 'cd': {
                 if (split_cmd.length < 2 || split_cmd[1] === '~') { 
                     window.location.replace('/');
-                } else {
-                    window.location.replace('/' + split_cmd[1]);
-                }  
+                } 
+                switch (split_cmd[1]) {
+                    case '.': {
+                        break;
+                    }
+                    case '..': {
+                        if (PARENT_DIR != '') {
+                            window.location.replace(PARENT_DIR)
+                        }
+                        change_site = true;
+                        break;
+                    }
+                    default: {
+                        if (AVAIL_DIRS.includes(split_cmd[1])) {
+                            window.location.replace('/' + split_cmd[1]); 
+                            change_site = true; 
+                        } else {
+                            output.push( { text: 'bash: cd: ' + split_cmd[1] + ': No such file or directory', color: WHITE } );
+                        }
+                        break;
+                    }
+                }
+                break;
             }
             default: {
                 output.push( { text: 'bash: ' + cmd + ': command not found', color: WHITE } );
@@ -88,11 +111,16 @@
 
         if (output.length > 0) pushLine(output)
         current_cmd = cmd_list.push(full_cmd)
+        
         render();
     }
 
   /* Rendering */
   function render() {
+    if (change_site) {
+        return;
+    }
+    
     const frag = document.createDocumentFragment();
     // Render scrollback history
     for (const line of history) {
