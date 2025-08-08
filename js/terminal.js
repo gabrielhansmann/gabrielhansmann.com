@@ -77,6 +77,10 @@
                 break;
             }
             case 'cd': {
+                if (split_cmd.length > 2) {
+                    output.push( { text: 'bash: cd: too many arguments', color: WHITE } );
+                    break;
+                }
                 if (split_cmd.length < 2 || split_cmd[1] === '~') { 
                     window.location.replace('/');
                 } 
