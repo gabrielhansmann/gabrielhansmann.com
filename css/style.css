@@ -1,7 +1,13 @@
-body       { 
+body { 
   margin:0; 
   background:#300924; 
   font:16px/1.4 "Fira Mono", monospace; 
+}
+h1 {
+  color: #fff;
+}
+p {
+  color: #fff;
 }
 #term { 
   background:#300924;
@@ -10,7 +16,7 @@ body       {
   font:16px/1.4 "Fira Mono", monospace;
   font-weight: 600;
 }
-.cursor    { 
+.cursor { 
   display:inline-block; 
   width:8px; 
   animation:blink 1s steps(1) infinite; 
