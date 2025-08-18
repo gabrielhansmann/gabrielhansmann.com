@@ -37,7 +37,7 @@ export function resolvePath(cwd, path) {
 }
 
 /** Walk the tree using a "~" canonical or relative path. */
-export function find(root, pathOrCanonical, cwd = '~', list_hidden = true) {
+export function find(root, pathOrCanonical, cwd = '~', list_hidden = false) {
   if (!root || !isDir(root)) throw new Error('root must be a directory node');
 
   const canonical = pathOrCanonical.startsWith('~')
@@ -73,7 +73,7 @@ export function findFile(root, pathOrCanonical, cwd = '~') {
   return isFile(n) ? n : null;
 }
 
-export function listDir(root, pathOrCanonical = '~', cwd = '~', list_hidden = true) {
+export function listDir(root, pathOrCanonical = '~', cwd = '~', list_hidden = false) {
   const n = find(root, pathOrCanonical, cwd, list_hidden);
   return isDir(n) ? n.contents : null;
 }

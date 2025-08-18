@@ -139,7 +139,9 @@ import { loadTree, resolvePath, listDir, isDir, find } from './tree.js';
           target = target.startsWith('~') ? target : resolvePath(CURR_DIR, target);
         }
         
-        if (isDir(find(root, target, CURR_DIR, false))) {
+        output.push({ text: target + '\n', color: WHITE });
+
+        if (isDir(find(root, target))) {
           window.location.replace(target);
           change_site = true;
         } else {
