@@ -42,14 +42,15 @@ import { loadTree, resolvePath, listDir, isDir, find } from './tree.js';
     history.push(tokens);
   }
 
-  function execute(full_cmd) {
+  function execute(command_string) {
     pushLine([
       { text: USER, color: GREEN }, { text: ':', color: WHITE }, { text: CURR_DIR, color: BLUE }, { text: '$ ', color: WHITE },
-      { text: full_cmd + '\n', color: WHITE }
+      { text: command_string + '\n', color: WHITE }
     ]);
 
-    const split_cmd = full_cmd.trim().split(/\s+/).filter(Boolean);
-    const cmd = split_cmd[0] ?? '';
+    const args = command_string.trim().split(/\s+/).filter(Boolean);
+    const cmd = args[0] ?? '';
+    args.shift();
 
     let output = [];
     change_site = false;
@@ -66,76 +67,96 @@ import { loadTree, resolvePath, listDir, isDir, find } from './tree.js';
       }
 
       case 'll': {
-        const pathArg = split_cmd.length > 1 ? split_cmd[1] : CURR_DIR;
-        const items = listDir(root, pathArg, CURR_DIR, true);
-        if (!items) {
-          output.push({ text: "ll: cannot access '" + pathArg + "': No such file or directory\n", color: WHITE });
-          break;
-        }
-        output.push({ text: 'total X\n', color: WHITE });
-        for (const node of items) {
-          if (node.type === 'directory') {
-            output.push(
-              { text: 'drwxr-sr-x ' + (node.contents.length-1 + 2) + ' user gabrielhansmann 4096 ' + node.date + ' ', color: WHITE },
-              { text: node.name, color: BLUE },
-              { text: '/\n', color: WHITE }
-            );
-          } else {
-            output.push(
-              { text: '-rw-r--r-- 1 user user            1234 ' + node.date + ' ', color: WHITE },
-              { text: node.name + '\n', color: WHITE }
-            );
+        const pathArgs = args.length > 0 ? args : CURR_DIR;
+        for (const pathArg of pathArgs) {
+          console.log(pathArg);
+          const items = listDir(root, pathArg, CURR_DIR, true);
+          if (!items) {
+            output.push({ text: "ll: cannot access '" + pathArg + "': No such file or directory\n", color: WHITE });
+            continue;
           }
+          if (pathArgs.length > 1) {
+            output.push({ text: pathArg + ':\n', color: WHITE });
+          }
+          output.push({ text: 'total X\n', color: WHITE });
+          for (const node of items) {
+            if (node.type === 'directory') {
+              output.push(
+                { text: 'drwxr-sr-x ' + (node.contents.length-1 + 2) + ' user gabrielhansmann 4096 ' + node.date + ' ', color: WHITE },
+                { text: node.name, color: BLUE },
+                { text: '/\n', color: WHITE }
+              );
+            } else {
+              output.push(
+                { text: '-rw-r--r-- 1 user user            1234 ' + node.date + ' ', color: WHITE },
+                { text: node.name + '\n', color: WHITE }
+              );
+            }
+          }
+          output.push({ text: '\n', color: WHITE });
         }
+        output.pop();
         break;
       }
 
       case 'ls': {
-        const pathArg = split_cmd.length > 1 ? split_cmd[1] : CURR_DIR;
-        const items = listDir(root, pathArg, CURR_DIR, false);
-        if (!items) {
-          output.push({ text: "ls: cannot access '" + pathArg + "': No such file or directory\n", color: WHITE });
-          break;
-        }
-        for (const node of items) {
-          if (node.type === 'directory') {
-            output.push({ text: node.name + ' ', color: BLUE });
-          } else {
-            output.push({ text: node.name + ' ', color: WHITE });
+        const pathArgs = args.length > 0 ? args : CURR_DIR;
+        for (const pathArg of pathArgs) {
+          const items = listDir(root, pathArg, CURR_DIR, false);
+          if (!items) {
+            output.push({ text: "ls: cannot access '" + pathArg + "': No such file or directory\n", color: WHITE });
+            continue;
           }
+          if (pathArgs.length > 1) {
+            output.push({ text: pathArg + ':\n', color: WHITE });
+          }
+          for (const node of items) {
+            if (node.type === 'directory') {
+              output.push({ text: node.name + ' ', color: BLUE });
+            } else {
+              output.push({ text: node.name + ' ', color: WHITE });
+            }
+          }
+          output.push({ text: '\n\n', color: WHITE });
         }
-        output.push({ text: '\n', color: WHITE });
+        output.pop();
         break;
       }
 
       case 'l': {
-        const pathArg = split_cmd.length > 1 ? split_cmd[1] : CURR_DIR;
-        const items = listDir(root, pathArg, CURR_DIR, false);
-        if (!items) {
-          output.push({ text: "l: cannot access '" + pathArg + "': No such file or directory\n", color: WHITE });
-          break;
-        }
-        for (const node of items) {
-          if (node.type === 'directory') {
-            output.push({ text: node.name, color: BLUE }, { text: '/ ', color: WHITE });
-          } else {
-            output.push({ text: node.name + ' ', color: WHITE });
+        const pathArgs = args.length > 0 ? args : CURR_DIR;
+        for (const pathArg of pathArgs) {
+          const items = listDir(root, pathArg, CURR_DIR, false);
+          if (!items) {
+            output.push({ text: "l: cannot access '" + pathArg + "': No such file or directory\n", color: WHITE });
+            continue;
           }
+          if (pathArgs.length > 1) {
+            output.push({ text: pathArg + ':\n', color: WHITE });
+          }
+          for (const node of items) {
+            if (node.type === 'directory') {
+              output.push({ text: node.name, color: BLUE }, { text: '/ ', color: WHITE });
+            } else {
+              output.push({ text: node.name + ' ', color: WHITE });
+            }
+          }
+          output.push({ text: '\n\n', color: WHITE });
         }
-        output.push({ text: '\n', color: WHITE });
+        output.pop()
         break;
       }
 
       case 'cd': {
-        if (split_cmd.length > 2) {
+        if (args.length > 1) {
           output.push({ text: 'bash: cd: too many arguments\n', color: WHITE });
           break;
         }
         let target = '';
-        if (split_cmd.length < 2 || split_cmd[1] === '~') {
+        if (args.length < 1 || args[0] === '~') {
           target = '/';
         } else {
-          target = split_cmd[1];
+          target = args[0];
           target = target.startsWith('~') ? target : resolvePath(CURR_DIR, target);
         }
         
@@ -145,20 +166,24 @@ import { loadTree, resolvePath, listDir, isDir, find } from './tree.js';
           window.location.replace(target);
           change_site = true;
         } else {
-          output.push({ text: 'bash: cd: ' + split_cmd[1] + ': No such file or directory', color: WHITE });
+          output.push({ text: 'bash: cd: ' + args[0] + ': No such file or directory', color: WHITE });
         }
         break;
       }
 
       default: {
-        output.push({ text: 'bash: ' + cmd + ': command not found\n', color: WHITE });
+        output.push({ text: 'bash: ' + command_string + ': command not found\n', color: WHITE });
         break;
       }
     }
 
     if (output.length > 0) pushLine(output);
-    current_cmd = cmd_list.push(full_cmd);
+    current_cmd = cmd_list.push(command_string);
     render();
+  }
+
+  function autocomplete(command_string) {
+
   }
 
   function render() {
@@ -205,7 +230,7 @@ import { loadTree, resolvePath, listDir, isDir, find } from './tree.js';
   }
 
   term.addEventListener('keydown', (ev) => {
-    if (ev.ctrlKey && (ev.key === 'c' || ev.key === 'C')) {
+    if (ev.ctrlKey && (ev.key === 'c')) {
       pushLine([
         { text: USER, color: GREEN }, { text: ':', color: WHITE }, { text: CURR_DIR, color: BLUE }, { text: '$ ', color: WHITE },
         { text: buffer, color: WHITE },
@@ -230,6 +255,8 @@ import { loadTree, resolvePath, listDir, isDir, find } from './tree.js';
       if (current_cmd < cmd_list.length) current_cmd += 1;
       else saved_buffer = buffer;
       buffer = cmd_list[current_cmd] ?? saved_buffer;
+    } else if (ev.key === 'Tab') {
+      autocomplete(buffer);
     } else if (ev.key.length === 1 && !ev.ctrlKey && !ev.metaKey) {
       buffer += ev.key;
     }

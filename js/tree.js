@@ -58,14 +58,18 @@ export function find(root, pathOrCanonical, cwd = '~', list_hidden = false) {
     }
   }
 
-  if (list_hidden) {
-    node.contents.unshift({ ...parent_node, name: '..' });
-    node.contents.unshift({ ...node, name: '.' });
+  let contents = node.contents.filter(item => { return item.name !== '.' && item.name !== '..'; });
+
+  if (!list_hidden) {
+    contents = contents.filter(item => !item.name.startsWith('.'));
   } else {
-    node.contents = node.contents.filter(item => !item.name.startsWith('.'));
+    contents.unshift(
+      { ...node, name: '.' },
+      { ...parent_node, name: '..' }
+    );
   }
 
-  return node;
+  return {...node, contents};
 }
 
 export function findFile(root, pathOrCanonical, cwd = '~') {
