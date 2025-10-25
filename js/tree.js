@@ -1,6 +1,6 @@
 // tree.js
 /**
- * @typedef {{ type:'file', name:string, location:string }} FileNode
+ * @typedef {{ type:string, name:string, location:string }} FileNode
  * @typedef {{ type:'directory', name:string, contents:(DirNode|FileNode)[] }} DirNode
  */
 
@@ -12,8 +12,7 @@ export async function loadTree(url = '/assets/dicts/tree.json') {
 }
 
 export const isDir   = (n) => n?.type === 'directory';
-export const isFile  = (n) => n?.type === 'file';
-export const fileUrl = (f) => `${f.location}/${f.name}`;
+export const isFile  = (n) => n?.type != 'directory';
 
 /** Normalize to a canonical "~" path. Handles "~", ".", "..", and relative paths. */
 export function resolvePath(cwd, path) {
@@ -33,17 +32,15 @@ export function resolvePath(cwd, path) {
     if (seg === '..') { if (parts.length) parts.pop(); continue; }
     parts.push(seg);
   }
-  return parts.length ? `/${parts.join('/')}` : '/';
+  return parts.length ? `~/${parts.join('/')}` : '~';
 }
 
 /** Walk the tree using a "~" canonical or relative path. */
 export function find(root, pathOrCanonical, cwd = '~', list_hidden = false) {
   if (!root || !isDir(root)) throw new Error('root must be a directory node');
 
-  const canonical = pathOrCanonical.startsWith('~')
-    ? pathOrCanonical
-    : resolvePath(cwd, pathOrCanonical);
-
+  const canonical = resolvePath(cwd, pathOrCanonical);
+  
   const parts = canonical.replace(/^~\/?/, '').split('/').filter(Boolean);
   
   let node = root;
@@ -58,18 +55,23 @@ export function find(root, pathOrCanonical, cwd = '~', list_hidden = false) {
     }
   }
 
-  let contents = node.contents.filter(item => { return item.name !== '.' && item.name !== '..'; });
-
-  if (!list_hidden) {
-    contents = contents.filter(item => !item.name.startsWith('.'));
-  } else {
-    contents.unshift(
-      { ...node, name: '.' },
-      { ...parent_node, name: '..' }
-    );
+  if(isDir(node)) {
+    let contents = node.contents.filter(item => { return item.name !== '.' && item.name !== '..'; });
+    
+    if (!list_hidden) {
+      contents = contents.filter(item => !item.name.startsWith('.'));
+    } else {
+      contents.unshift(
+        { ...node, name: '.' },
+        { ...parent_node, name: '..' }
+      );
+    }
+    
+    return {...node, contents};
+  } else if (isFile(node)) {
+    return node;
   }
-
-  return {...node, contents};
+  return null;
 }
 
 export function findFile(root, pathOrCanonical, cwd = '~') {
