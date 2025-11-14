@@ -12,7 +12,9 @@
       {"type": "asset", "name": "test.webm", "date": "Aug 25 12:00", "location": "/assets/videos"}
     ]},
     {"type": "directory", "name": "subdomains", "date": "Sep 25 12:00", "contents": [
-      {"type": "link", "name": "storage", "date": "Okt 25 12:00", "location": "https://storage.gabrielhansmann.com"}
+      {"type": "link", "name": "storage", "date": "Okt 25 12:00", "location": "https://storage.gabrielhansmann.com"},
+      {"type": "link", "name": "mail", "date": "Nov 25 12:00", "location": "https://mail.gabrielhansmann.com"},
+      {"type": "link", "name": "recipes", "date": "Dec 25 12:00", "location": "https://recipes.gabrielhansmann.com"}
     ]}
   ]}
 ]
