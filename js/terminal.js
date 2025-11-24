@@ -1,11 +1,13 @@
 // terminal.js
 import { loadTree, resolvePath, listDir, findFile, isDir, isFile, find } from './tree.js';
 
-export async function mountTerminal(hostElement, { user, currDir } = {}) {
+export async function mountTerminal(
+  hostElement,
+  { user, currDir, onOpenAsset, onOpenLink } = {},
+) {
   const term = hostElement;
   if (!term) { console.error('mountTerminal: hostElement missing'); return; }
 
-  // Source from caller or global (index.html), then freeze per instance
   window.CURR_DIR = currDir ?? window.CURR_DIR ?? '~';
   window.USER = user ?? window.USER ?? 'user';
 
@@ -159,18 +161,24 @@ export async function mountTerminal(hostElement, { user, currDir } = {}) {
         output.pop();
         break;
       }
-      case 'open': {
+            case 'open': {
         if (args.length > 1) {
-          output.push({ text: `xdg-open: unexpected argument '${args.at(1)}'`, color: WHITE });
+          output.push({ text: `xdg-open: unexpected argument '${args.at(1)}'\n`, color: WHITE });
           break;
         }
         const pathArg = args[0];
         const file_node = findFile(root, pathArg, CURR_DIR);
         if (file_node) {
-          if (file_node.type === 'asset') window.location = file_node.location + '/' + file_node.name;
-          if (file_node.type === 'link') window.location = file_node.location;
+          if (file_node.type === 'asset') {
+            onOpenAsset(file_node);
+          } else if (file_node.type === 'link') {
+            onOpenLink(file_node);
+          }
         } else {
-          output.push({ text: `gio: file:///${pathArg}: Error when getting information for file “${pathArg}”: No such file or directory`, color: WHITE });
+          output.push({
+            text: `gio: file:///${pathArg}: Error when getting information for file “${pathArg}”: No such file or directory\n`,
+            color: WHITE,
+          });
         }
         break;
       }
