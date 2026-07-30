@@ -1,20 +1,22 @@
 [
   {"type": "directory", "name": "~", "date": "Jan 25 12:00", "contents": [
-    {"type": "directory", "name": "image_test", "date": "Feb 25 12:00", "contents": [
-      {"type": "directory", "name": "charlie_fanpage", "date": "Sep 25 12:00", "contents": [
-        {"type": "asset", "name": "charlie.jpg", "date": "Mar 25 12:00", "location": "/assets/images"}
+    {"type": "directory", "name": "tests", "date": "Apr 25 12:00", "contents": [
+      {"type": "directory", "name": "image_test", "date": "Feb 25 12:00", "contents": [
+        {"type": "directory", "name": "charlie_fanpage", "date": "Sep 25 12:00", "contents": [
+          {"type": "asset", "name": "charlie.jpg", "date": "Mar 25 12:00", "location": "/assets/images"}
+        ]}
+      ]},
+      {"type": "directory", "name": "model_test", "date": "Apr 25 12:00", "contents": [
+        {"type": "asset", "name": "wood_statue.glb", "date": "Jun 25 12:00", "location": "/assets/models"}
+      ]},
+      {"type": "directory", "name": "video_test", "date": "Jul 25 12:00", "contents": [
+        {"type": "asset", "name": "test.webm", "date": "Aug 25 12:00", "location": "/assets/videos"}
       ]}
     ]},
-    {"type": "directory", "name": "model_test", "date": "Apr 25 12:00", "contents": [
-      {"type": "asset", "name": "wood_statue.glb", "date": "Jun 25 12:00", "location": "/assets/models"}
-    ]},
-    {"type": "directory", "name": "video_test", "date": "Jul 25 12:00", "contents": [
-      {"type": "asset", "name": "test.webm", "date": "Aug 25 12:00", "location": "/assets/videos"}
-    ]},
     {"type": "directory", "name": "subdomains", "date": "Sep 25 12:00", "contents": [
-      {"type": "link", "name": "storage", "date": "Okt 25 12:00", "location": "https://storage.gabrielhansmann.com"},
-      {"type": "link", "name": "mail", "date": "Nov 25 12:00", "location": "https://mail.gabrielhansmann.com"},
-      {"type": "link", "name": "recipes", "date": "Dec 25 12:00", "location": "https://recipes.gabrielhansmann.com"}
+      {"type": "link", "name": "portfolio", "date": "Jan 25 12:00", "location": "https://portfolio.gabrielhansmann.com"},
+      {"type": "link", "name": "stats", "date": "Dec 25 12:00", "location": "https://stats.gabrielhansmann.com"},
+      {"type": "link", "name": "storage", "date": "Okt 25 12:00", "location": "https://storage.gabrielhansmann.com"}
     ]}
   ]}
 ]
