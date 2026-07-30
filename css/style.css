@@ -147,7 +147,12 @@ body {
   font-size: 14px;
   line-height: 1;
   padding: 0 4px;
+  margin-left: auto;
   cursor: pointer;
+}
+.wm-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
 }
 
 /* ===========================
@@ -155,9 +160,8 @@ body {
    =========================== */
 
 .wm-content {
+  flex: 1;
   position: relative;
-  width: 100%;
-  height: 100%;
   overflow: hidden;
 }
 
@@ -172,6 +176,14 @@ body {
 
 /* Image viewer windows */
 .wm-image {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto;
+}
+
+/* Video viewer windows */
+.wm-video {
   max-width: 100%;
   max-height: 100%;
   display: block;
@@ -225,11 +237,17 @@ body {
   background: var(--terminal-bg);
   color: var(--terminal-fg);
   white-space: pre-wrap;
-  padding: 1rem;
   font: 16px/1.4 "Fira Mono", SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   font-weight: 600;
   overflow: auto;
+  height: 100%;
+  margin: 0;
+  border: none;
+}
+
+.term-host:focus {
+  outline: none;      /* remove focus outline if you don't want a box */
 }
 
 /* Optional: headings inside terminal-ish windows (if you use them) */
